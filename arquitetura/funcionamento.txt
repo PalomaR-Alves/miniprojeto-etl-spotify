@@ -1,0 +1,35 @@
+S3 - Staging: os dados serão postos no S3, servindo como camada de "stage";
+Glue: o glue será usado para construir o ETL que transferirá os dados do stage para o Data Warehouse;
+S3 - Data Warehouse: armazenará os dados pós processamento do ETL;
+Crawler (Glue): este crawler irá criar um banco de dados e popular uma tabela do banco;
+Athena: para fazer query na tabela criada;
+QuickSight: visualizar os dados em gráficos e ter um insight de negócio;
+
+Projeto usado: https://www.youtube.com/watch?v=yIc5a7C8aHs&list=PLneCMoGtN9nRcm7wCn2FFqZRpT7mQljKR
+Dataset usado: https://www.kaggle.com/datasets/tonygordonjr/spotify-dataset-2023
+
+Para o projeto os dados usados em si são dados pré processados desse dataset do kaggle,
+estando na pasta "data".
+
+
+========== ETAPAS ==========
+
+- Etapa 1
+Criar IAM user: esse usuário contém as permissões necessárias para implementar o projeto via console
+AWS, mas como esse projeto foi feito via terraform o uso deste user não foi necessário, mesmo assim
+ele foi criado para fins de prática.
+
+- Etapa 2
+Criar um bucket S3: o bucket, juntamente com duas "pastas" foi criado, e o upload dos arquivos .csv
+foi feito via terraform para dentro da pasta "staging".
+
+- Etapa 3
+Estruturar ETL via Glue: para usar o Glue foi preciso criar um glue catalog, que é como se fosse um
+banco de dados, e uma glue table, que é uma tabela desse "banco". Essa tabela tem como intuito armazenar
+metadados sobre as bases de dados usadas nos jobs do Glue.
+
+Transformações: as transformações feitas foram um join entre duas tabelas, outro join entre uma tabela
+e o resultado do join anterior, e o drop de colunas inutilizadas. Usando DynamicFrames.
+
+- Etapa 4
+Salvar: o .csv final é salvo na pasta "datawarehouse" do bucket
